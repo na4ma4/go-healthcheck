@@ -1,4 +1,4 @@
-package health_test
+package healthcheck_test
 
 import (
 	"errors"

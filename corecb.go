@@ -1,4 +1,4 @@
-package health
+package healthcheck
 
 type CoreWithCallback struct {
 	itemOpts []itemCoreCallbackOpts

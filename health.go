@@ -1,4 +1,4 @@
-package health
+package healthcheck
 
 type Health interface {
 	Get(name string) Item
