@@ -24,7 +24,7 @@ func NewItemCoreWithCallbacks(name string, opts ...itemCoreCallbackOpts) *ItemCo
 	}
 
 	if !item.runCallback(StatusStarting, nil) {
-		item.item.times = map[Status]time.Time{}
+		item.item.times = map[Status]EventTime{}
 		item.item.lifecycle = []Event{}
 	}
 
@@ -47,7 +47,7 @@ func (i *ItemCoreWithCallback) Duration() time.Duration {
 	return i.item.Duration()
 }
 
-func (i *ItemCoreWithCallback) StartTime() time.Time {
+func (i *ItemCoreWithCallback) StartTime() EventTime {
 	return i.item.StartTime()
 }
 

@@ -15,6 +15,19 @@ func NewCore() *Core {
 	}
 }
 
+func (c *Core) Iterate(cb HealthIterator) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	for name, item := range c.items {
+		if err := cb(name, item); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (c *Core) Get(name string) Item {
 	c.lock.Lock()
 	defer c.lock.Unlock()

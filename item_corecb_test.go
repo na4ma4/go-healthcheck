@@ -25,11 +25,11 @@ func TestItemCoreWithCallbacks(t *testing.T) {
 		t.Fatalf("item.Lifecycle: lifecycle items got '%d' want '%d'", len(lifecycle), 3)
 	}
 
-	if v := lifecycle[1].Timestamp.Sub(lifecycle[0].Timestamp); v < time.Millisecond {
+	if v := lifecycle[1].Timestamp.Sub(lifecycle[0].Timestamp.Time); v < time.Millisecond {
 		t.Errorf("item.Lifecycle: got '%s', expect difference between 0 and 1 to be more than 1us", v.String())
 	}
 
-	if v := lifecycle[2].Timestamp.Sub(lifecycle[1].Timestamp); v < time.Millisecond {
+	if v := lifecycle[2].Timestamp.Sub(lifecycle[1].Timestamp.Time); v < time.Millisecond {
 		t.Errorf("item.Lifecycle: got '%s', expect difference between 1 and 2 to be more than 1us", v.String())
 	}
 
@@ -37,7 +37,7 @@ func TestItemCoreWithCallbacks(t *testing.T) {
 		t.Errorf("item.Name: got '%s' want '%s'", item.Name(), "test1")
 	}
 
-	if !startedTime.After(item.StartTime()) || startTime.After(item.StartTime()) {
+	if !startedTime.After(item.StartTime().Time) || startTime.After(item.StartTime().Time) {
 		t.Error("item.StartTime: not in between timestamps before and after starting")
 	}
 }

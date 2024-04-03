@@ -12,6 +12,10 @@ func NewCoreWithCallbacks(opts ...itemCoreCallbackOpts) Health {
 	}
 }
 
+func (c *CoreWithCallback) Iterate(cb HealthIterator) error {
+	return c.core.Iterate(cb)
+}
+
 func (c *CoreWithCallback) Get(name string) Item {
 	c.core.lock.Lock()
 	defer c.core.lock.Unlock()

@@ -10,7 +10,7 @@ type ItemCore struct {
 	lock      sync.RWMutex
 	name      string
 	status    Status
-	times     map[Status]time.Time
+	times     map[Status]EventTime
 	lifecycle []Event
 }
 
@@ -19,11 +19,11 @@ func NewItemCore(name string) *ItemCore {
 	return &ItemCore{
 		name:   name,
 		status: StatusStarting,
-		times: map[Status]time.Time{ //nolint:exhaustive // initial state.
-			StatusStarting: ts,
+		times: map[Status]EventTime{ //nolint:exhaustive // initial state.
+			StatusStarting: NewEventTime(ts),
 		},
 		lifecycle: []Event{
-			{ts, StatusStarting},
+			{NewEventTime(ts), StatusStarting},
 		},
 	}
 }
@@ -31,8 +31,8 @@ func NewItemCore(name string) *ItemCore {
 func (h *ItemCore) setStatus(s Status) {
 	ts := time.Now()
 	h.status = s
-	h.times[s] = ts
-	h.lifecycle = append(h.lifecycle, Event{ts, s})
+	h.times[s] = NewEventTime(ts)
+	h.lifecycle = append(h.lifecycle, Event{NewEventTime(ts), s})
 }
 
 func (h *ItemCore) Name() string {
@@ -52,11 +52,11 @@ func (h *ItemCore) Duration() time.Duration {
 
 	for _, status := range []Status{StatusFinished, StatusErrored} {
 		if v, ok := h.times[status]; ok {
-			return v.Sub(h.times[StatusStarting])
+			return v.Sub(h.times[StatusStarting].Time)
 		}
 	}
 
-	return time.Since(h.times[StatusStarting])
+	return time.Since(h.times[StatusStarting].Time)
 }
 
 func (h *ItemCore) Lifecycle() []Event {
@@ -66,7 +66,7 @@ func (h *ItemCore) Lifecycle() []Event {
 	return slices.Clone(h.lifecycle)
 }
 
-func (h *ItemCore) StartTime() time.Time {
+func (h *ItemCore) StartTime() EventTime {
 	h.lock.Lock()
 	defer h.lock.Unlock()
 

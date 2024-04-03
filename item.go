@@ -6,7 +6,7 @@ type Item interface {
 	Name() string
 	Duration() time.Duration
 	Lifecycle() []Event
-	StartTime() time.Time
+	StartTime() EventTime
 	Error(err error) Item
 	Start() Item
 	Stop() Item
