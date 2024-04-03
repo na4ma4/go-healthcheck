@@ -33,6 +33,7 @@ type healthReportItem struct {
 
 func Handler(healthCheck Health) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		report := healthToReport(healthCheck, r)
 		w.Header().Add("X-Health-Status", report.Status.String())
