@@ -1,6 +1,7 @@
 package healthcheck
 
 import (
+	"sort"
 	"sync"
 )
 
@@ -19,8 +20,14 @@ func (c *Core) Iterate(cb HealthIterator) error {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	for name, item := range c.items {
-		if err := cb(name, item); err != nil {
+	keys := []string{}
+	for name := range c.items {
+		keys = append(keys, name)
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		if err := cb(key, c.items[key]); err != nil {
 			return err
 		}
 	}
