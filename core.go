@@ -62,7 +62,7 @@ func (c *Core) Status() map[string]bool {
 	out := map[string]bool{}
 
 	for k, v := range c.items {
-		out[k] = StatusIsRunning(v.Status())
+		out[k] = StatusIsHealthy(v.Status())
 	}
 
 	return out

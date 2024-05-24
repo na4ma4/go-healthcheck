@@ -99,14 +99,23 @@ func TestCoreWithCallbacks_Stopped(t *testing.T) {
 	core.Get("test3").Start()
 	core.Stop("test2")
 
-	out := core.Status()
 	expect := map[string]bool{
+		"test1": true,
+		"test2": true,
+		"test3": true,
+	}
+	if diff := cmp.Diff(core.Status(), expect); diff != "" {
+		t.Errorf("ReadZoneFile: status -got +want:\n%s", diff)
+	}
+
+	expect = map[string]bool{
 		"test1": true,
 		"test2": false,
 		"test3": true,
 	}
+	core.Get("test2").Start().Error(errors.New("foo"))
 
-	if diff := cmp.Diff(out, expect); diff != "" {
+	if diff := cmp.Diff(core.Status(), expect); diff != "" {
 		t.Errorf("ReadZoneFile: status -got +want:\n%s", diff)
 	}
 }

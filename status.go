@@ -19,8 +19,8 @@ var statusList = []Status{
 	StatusFinished,
 }
 
-func StatusIsRunning(s Status) bool {
-	return s == StatusRunning
+func StatusIsHealthy(s Status) bool {
+	return s == StatusRunning || s == StatusFinished
 }
 
 func (s Status) String() string {
