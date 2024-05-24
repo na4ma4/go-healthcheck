@@ -105,7 +105,7 @@ func TestCoreWithCallbacks_Stopped(t *testing.T) {
 		"test3": true,
 	}
 	if diff := cmp.Diff(core.Status(), expect); diff != "" {
-		t.Errorf("ReadZoneFile: status -got +want:\n%s", diff)
+		t.Errorf("healthcheck.Status(): status -got +want:\n%s", diff)
 	}
 
 	expect = map[string]bool{
@@ -116,6 +116,6 @@ func TestCoreWithCallbacks_Stopped(t *testing.T) {
 	core.Get("test2").Start().Error(errors.New("foo"))
 
 	if diff := cmp.Diff(core.Status(), expect); diff != "" {
-		t.Errorf("ReadZoneFile: status -got +want:\n%s", diff)
+		t.Errorf("healthcheck.Status(): status -got +want:\n%s", diff)
 	}
 }
