@@ -1,34 +1,30 @@
 package healthcheck
 
-type Status string
+// type Status string
 
 const (
-	StatusStarting Status = "starting"
-	StatusRunning  Status = "running"
-	StatusFinished Status = "finished"
-	StatusErrored  Status = "errored"
-	StatusUnknown  Status = "unknown"
+	StatusStarting = Status_STARTING
+	StatusRunning  = Status_RUNNING
+	StatusFinished = Status_FINISHED
+	StatusErrored  = Status_ERRORED
+	StatusUnknown  = Status_UNKNOWN
 )
 
 //nolint:gochecknoglobals // List of priority order for status.
-var statusList = []Status{
-	StatusErrored,
-	StatusUnknown,
-	StatusStarting,
-	StatusRunning,
-	StatusFinished,
+var statusPriorityList = []Status{
+	Status_ERRORED,
+	Status_UNKNOWN,
+	Status_STARTING,
+	Status_RUNNING,
+	Status_FINISHED,
 }
 
 func StatusIsHealthy(s Status) bool {
 	return s == StatusRunning || s == StatusFinished
 }
 
-func (s Status) String() string {
-	return string(s)
-}
-
 func (s Status) Valid() bool {
-	for _, v := range statusList {
+	for _, v := range statusPriorityList {
 		if s == v {
 			return true
 		}
@@ -40,23 +36,5 @@ func (s Status) Valid() bool {
 // Less returns true if the status supplied is higher importance than the
 // base Status.
 func (s Status) Less(in Status) bool {
-	return statusLess[Status](statusList, s, in)
-}
-
-func statusLess[T ~string](src []T, l, r T) bool {
-	if l == "" {
-		return true
-	}
-	if l == r {
-		return false
-	}
-	for _, v := range src {
-		if v == l {
-			return false
-		} else if v == r {
-			return true
-		}
-	}
-
-	return true
+	return statusLess[Status](statusPriorityList, s, in)
 }

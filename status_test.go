@@ -12,12 +12,12 @@ func TestStatusLess(t *testing.T) {
 		x, y     healthcheck.Status
 		lessThan bool
 	}{
-		// Empty string = nil
-		{"", healthcheck.StatusStarting, true},
-		{"", healthcheck.StatusRunning, true},
-		{"", healthcheck.StatusFinished, true},
-		{"", healthcheck.StatusUnknown, true},
-		{"", healthcheck.StatusErrored, true},
+		// // Unknown(0) = Unknown
+		// {0, healthcheck.StatusStarting, false},
+		// {0, healthcheck.StatusRunning, false},
+		// {0, healthcheck.StatusFinished, false},
+		// {0, healthcheck.StatusUnknown, false},
+		// {0, healthcheck.StatusErrored, true},
 
 		// Errored = 0
 		{healthcheck.StatusErrored, healthcheck.StatusErrored, false},

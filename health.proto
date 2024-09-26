@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package healthcheck;
+option go_package = "github.com/na4ma4/go-healthcheck;healthcheck";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/descriptor.proto";
+
+message ItemProto {
+    string name = 1;
+    repeated EventProto lifecycle = 2;
+    map<int32, google.protobuf.Timestamp> times = 3;
+
+    google.protobuf.Duration duration = 10;
+    google.protobuf.Timestamp start_time = 11;
+    
+    Status status = 30;
+
+	// Error(err error) Item
+	// Start() Item
+	// Stop() Item
+}
+
+message EventProto {
+    google.protobuf.Timestamp timestamp = 1;
+    Status status = 2;
+    string message = 3;
+}
+
+extend google.protobuf.EnumValueOptions {
+  string display_name = 33000;
+}
+
+enum Status {
+    UNKNOWN = 0 [ (healthcheck.display_name) = "unknown" ];
+    STARTING = 1 [ (healthcheck.display_name) = "starting" ];
+    RUNNING = 2 [ (healthcheck.display_name) = "running" ];
+    FINISHED = 3  [ (healthcheck.display_name) = "finished" ];
+    ERRORED = 4  [ (healthcheck.display_name) = "errored" ];
+}
+
+enum ReportStatus {
+    NOTSET = 0;
+    RED = 1;
+    YELLOW = 2;
+    GREEN = 3;
+}
