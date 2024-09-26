@@ -1,26 +1,26 @@
 package healthcheck
 
-type ReportStatus Status
+// type ReportStatus Status
 
 const (
-	ReportStatusGreen  ReportStatus = "green"
-	ReportStatusYellow ReportStatus = "yellow"
-	ReportStatusRed    ReportStatus = "red"
+	ReportStatusGreen  = ReportStatus_GREEN
+	ReportStatusYellow = ReportStatus_YELLOW
+	ReportStatusRed    = ReportStatus_RED
 )
 
 //nolint:gochecknoglobals // List of priority order for status.
-var reportStatusList = []ReportStatus{
+var reportStatusPriorityList = []ReportStatus{
 	ReportStatusRed,
 	ReportStatusYellow,
 	ReportStatusGreen,
 }
 
-func (s ReportStatus) String() string {
-	return string(s)
-}
+// func (s ReportStatus) String() string {
+// 	return string(s)
+// }
 
 func (s ReportStatus) Valid() bool {
-	for _, v := range reportStatusList {
+	for _, v := range reportStatusPriorityList {
 		if s == v {
 			return true
 		}
@@ -32,7 +32,7 @@ func (s ReportStatus) Valid() bool {
 // Less returns true if the status supplied is higher importance than the
 // base Status.
 func (s ReportStatus) Less(in ReportStatus) bool {
-	return statusLess[ReportStatus](reportStatusList, s, in)
+	return statusLess[ReportStatus](reportStatusPriorityList, s, in)
 }
 
 func ItemStatusToReportStatus(itemStatus Status) ReportStatus {

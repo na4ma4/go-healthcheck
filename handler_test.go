@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/na4ma4/go-healthcheck"
 )
 
@@ -178,6 +179,11 @@ func TestHandler_GlobalStatusSimple(t *testing.T) {
 func TestHandler_SimpleStatus(t *testing.T) {
 	hc := healthcheck.NewCore()
 
+	cmpoptions := []cmp.Option{
+		cmpopts.IgnoreUnexported(healthcheck.ReportSimple{}),
+		cmpopts.IgnoreUnexported(healthcheck.ReportItemSimple{}),
+	}
+
 	successCheck1 := hc.Get("Success1")
 	successCheck2 := hc.Get("Success2").Start()
 	ts := httptest.NewServer(healthcheck.Handler(hc))
@@ -190,27 +196,27 @@ func TestHandler_SimpleStatus(t *testing.T) {
 	}
 
 	expect := &healthcheck.ReportSimple{
-		Status: healthcheck.ReportStatusYellow,
+		Status: healthcheck.ReportStatusText(healthcheck.ReportStatusYellow.String()),
 		Services: []*healthcheck.ReportItemSimple{
-			{Name: "Success1", Status: healthcheck.ReportStatusYellow},
-			{Name: "Success2", Status: healthcheck.ReportStatusGreen},
+			{Name: "Success1", Status: healthcheck.ReportStatusText(healthcheck.ReportStatusYellow.String())},
+			{Name: "Success2", Status: healthcheck.ReportStatusText(healthcheck.ReportStatusGreen.String())},
 		},
 	}
-	if diff := cmp.Diff(resp, expect); diff != "" {
+	if diff := cmp.Diff(resp, expect, cmpoptions...); diff != "" {
 		t.Errorf("Starting+Started: -got +want:\n%s", diff)
 	}
 
 	// Test All Started
 	successCheck1.Start()
-	expect.Status = healthcheck.ReportStatusGreen
-	expect.Services[0].Status = healthcheck.ReportStatusGreen
+	expect.Status = healthcheck.ReportStatusText(healthcheck.ReportStatusGreen.String())
+	expect.Services[0].Status = healthcheck.ReportStatusText(healthcheck.ReportStatusGreen.String())
 
 	resp, err = getReport[*healthcheck.ReportSimple](ts, "simple=1")
 	if err != nil {
 		t.Errorf("unable to request or decode report: got error '%s'", err)
 		return
 	}
-	if diff := cmp.Diff(resp, expect); diff != "" {
+	if diff := cmp.Diff(resp, expect, cmpoptions...); diff != "" {
 		t.Errorf("Started+Started: -got +want:\n%s", diff)
 	}
 
@@ -223,14 +229,14 @@ func TestHandler_SimpleStatus(t *testing.T) {
 		return
 	}
 
-	if diff := cmp.Diff(resp, expect); diff != "" {
+	if diff := cmp.Diff(resp, expect, cmpoptions...); diff != "" {
 		t.Errorf("Stopped+Running: -got +want:\n%s", diff)
 	}
 
 	// Test Error
 	successCheck2.Error(errors.New("foo"))
-	expect.Status = healthcheck.ReportStatusRed
-	expect.Services[1].Status = healthcheck.ReportStatusRed
+	expect.Status = healthcheck.ReportStatusText(healthcheck.ReportStatusRed.String())
+	expect.Services[1].Status = healthcheck.ReportStatusText(healthcheck.ReportStatusRed.String())
 
 	resp, err = getReport[*healthcheck.ReportSimple](ts, "simple=1")
 	if err != nil {
@@ -238,7 +244,7 @@ func TestHandler_SimpleStatus(t *testing.T) {
 		return
 	}
 
-	if diff := cmp.Diff(resp, expect); diff != "" {
+	if diff := cmp.Diff(resp, expect, cmpoptions...); diff != "" {
 		t.Errorf("Stopped+Errored Success: -got +want:\n%s", diff)
 	}
 }

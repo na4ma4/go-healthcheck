@@ -28,88 +28,88 @@ func NewItemCore(name string) *ItemCore {
 	}
 }
 
-func (h *ItemCore) setStatus(s Status) {
+func (i *ItemCore) setStatus(s Status) {
 	ts := time.Now()
-	h.status = s
-	h.times[s] = NewEventTime(ts)
-	h.lifecycle = append(h.lifecycle, Event{NewEventTime(ts), s})
+	i.status = s
+	i.times[s] = NewEventTime(ts)
+	i.lifecycle = append(i.lifecycle, Event{NewEventTime(ts), s})
 }
 
-func (h *ItemCore) Name() string {
-	return h.name
+func (i *ItemCore) Name() string {
+	return i.name
 }
 
-func (h *ItemCore) SetStatus(s Status) {
-	h.lock.Lock()
-	defer h.lock.Unlock()
+func (i *ItemCore) SetStatus(s Status) {
+	i.lock.Lock()
+	defer i.lock.Unlock()
 
-	h.setStatus(s)
+	i.setStatus(s)
 }
 
-func (h *ItemCore) Duration() time.Duration {
-	h.lock.RLock()
-	defer h.lock.RUnlock()
+func (i *ItemCore) Duration() time.Duration {
+	i.lock.RLock()
+	defer i.lock.RUnlock()
 
 	for _, status := range []Status{StatusFinished, StatusErrored} {
-		if v, ok := h.times[status]; ok {
-			return v.Sub(h.times[StatusStarting].Time)
+		if v, ok := i.times[status]; ok {
+			return v.Sub(i.times[StatusStarting].Time)
 		}
 	}
 
-	return time.Since(h.times[StatusStarting].Time)
+	return time.Since(i.times[StatusStarting].Time)
 }
 
-func (h *ItemCore) Lifecycle() []Event {
-	h.lock.RLock()
-	defer h.lock.RUnlock()
+func (i *ItemCore) Lifecycle() []Event {
+	i.lock.RLock()
+	defer i.lock.RUnlock()
 
-	return slices.Clone(h.lifecycle)
+	return slices.Clone(i.lifecycle)
 }
 
-func (h *ItemCore) StartTime() EventTime {
-	h.lock.Lock()
-	defer h.lock.Unlock()
+func (i *ItemCore) StartTime() EventTime {
+	i.lock.Lock()
+	defer i.lock.Unlock()
 
-	return h.times[StatusStarting]
+	return i.times[StatusStarting]
 }
 
-func (h *ItemCore) Status() Status {
-	h.lock.RLock()
-	defer h.lock.RUnlock()
+func (i *ItemCore) Status() Status {
+	i.lock.RLock()
+	defer i.lock.RUnlock()
 
-	return h.status
+	return i.status
 }
 
-func (h *ItemCore) Start() Item {
-	h.lock.Lock()
-	defer h.lock.Unlock()
+func (i *ItemCore) Start() Item {
+	i.lock.Lock()
+	defer i.lock.Unlock()
 
-	h.setStatus(StatusRunning)
-	return h
+	i.setStatus(StatusRunning)
+	return i
 }
 
-func (h *ItemCore) Error(err error) Item {
-	h.lock.Lock()
-	defer h.lock.Unlock()
+func (i *ItemCore) Error(err error) Item {
+	i.lock.Lock()
+	defer i.lock.Unlock()
 
-	if h.status == StatusRunning || h.status == StatusStarting {
+	if i.status == StatusRunning || i.status == StatusStarting {
 		if err != nil {
-			h.setStatus(StatusErrored)
+			i.setStatus(StatusErrored)
 		} else {
-			h.setStatus(StatusFinished)
+			i.setStatus(StatusFinished)
 		}
 	}
 
-	return h
+	return i
 }
 
-func (h *ItemCore) Stop() Item {
-	h.lock.Lock()
-	defer h.lock.Unlock()
+func (i *ItemCore) Stop() Item {
+	i.lock.Lock()
+	defer i.lock.Unlock()
 
-	if h.status == StatusRunning || h.status == StatusStarting {
-		h.setStatus(StatusFinished)
+	if i.status == StatusRunning || i.status == StatusStarting {
+		i.setStatus(StatusFinished)
 	}
 
-	return h
+	return i
 }

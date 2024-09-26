@@ -12,10 +12,10 @@ func TestReportStatusLess(t *testing.T) {
 		x, y     healthcheck.ReportStatus
 		lessThan bool
 	}{
-		// Empty string = nil
-		{"", healthcheck.ReportStatusRed, true},
-		{"", healthcheck.ReportStatusYellow, true},
-		{"", healthcheck.ReportStatusGreen, true},
+		// Unknown(0) = NOTSET
+		{0, healthcheck.ReportStatusRed, true},
+		{0, healthcheck.ReportStatusYellow, true},
+		{0, healthcheck.ReportStatusGreen, true},
 
 		// Red = 0
 		{healthcheck.ReportStatusRed, healthcheck.ReportStatusRed, false},

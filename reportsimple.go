@@ -6,7 +6,8 @@ import (
 )
 
 type ReportSimple struct {
-	Status   ReportStatus        `json:"status,omitempty"`
+	status   ReportStatus        `json:"-"`
+	Status   ReportStatusText    `json:"status,omitempty"`
 	Services []*ReportItemSimple `json:"services,omitempty"`
 }
 
@@ -15,10 +16,11 @@ func (r *ReportSimple) GetStatus() string {
 }
 
 type ReportItemSimple struct {
-	Name      string       `json:"name,omitempty"`
-	Status    ReportStatus `json:"status,omitempty"`
-	StartTime string       `json:"start_time,omitempty"`
-	Lifecycle []Event      `json:"lifecycle,omitempty"`
+	Name      string           `json:"name,omitempty"`
+	status    ReportStatus     `json:"-"`
+	Status    ReportStatusText `json:"status,omitempty"`
+	StartTime string           `json:"start_time,omitempty"`
+	Lifecycle []Event          `json:"lifecycle,omitempty"`
 }
 
 func GenerateReportSimple(healthCheck Health, r *http.Request) *ReportSimple {
@@ -29,17 +31,19 @@ func GenerateReportSimple(healthCheck Health, r *http.Request) *ReportSimple {
 		Services: []*ReportItemSimple{},
 	}
 
-	out.Status = ReportStatusGreen
+	out.status = ReportStatusGreen
 
 	_ = healthCheck.Iterate(func(name string, item Item) error {
 		outItem := &ReportItemSimple{
 			Name: name,
 		}
 
-		outItem.Status = ItemStatusToReportStatus(item.Status())
-		if out.Status.Less(outItem.Status) {
-			out.Status = outItem.Status
+		outItem.status = ItemStatusToReportStatus(item.Status())
+		if out.status.Less(outItem.status) {
+			out.status = outItem.status
 		}
+
+		outItem.Status = ReportStatusTextFromStatus(outItem.status)
 
 		if displayVerbose { // display verbose output (time)
 			outItem.StartTime = item.StartTime().Format(time.RFC3339Nano)
@@ -53,6 +57,8 @@ func GenerateReportSimple(healthCheck Health, r *http.Request) *ReportSimple {
 
 		return nil
 	})
+
+	out.Status = ReportStatusTextFromStatus(out.status)
 
 	return out
 }

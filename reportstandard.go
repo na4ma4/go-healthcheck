@@ -6,7 +6,8 @@ import (
 )
 
 type ReportStandard struct {
-	Status   Status                `json:"status,omitempty"`
+	status   *Status               `json:"-"`
+	Status   StatusText            `json:"status,omitempty"`
 	Services []*ReportItemStandard `json:"services,omitempty"`
 }
 
@@ -15,10 +16,11 @@ func (r *ReportStandard) GetStatus() string {
 }
 
 type ReportItemStandard struct {
-	Name      string  `json:"name,omitempty"`
-	Status    Status  `json:"status,omitempty"`
-	StartTime string  `json:"start_time,omitempty"`
-	Lifecycle []Event `json:"lifecycle,omitempty"`
+	Name      string     `json:"name,omitempty"`
+	status    *Status    `json:"-"`
+	Status    StatusText `json:"status,omitempty"`
+	StartTime string     `json:"start_time,omitempty"`
+	Lifecycle []Event    `json:"lifecycle,omitempty"`
 }
 
 func GenerateReport(healthCheck Health, r *http.Request) *ReportStandard {
@@ -26,6 +28,7 @@ func GenerateReport(healthCheck Health, r *http.Request) *ReportStandard {
 	displayVerbose := getQueryBool(r, "verbose")
 
 	out := &ReportStandard{
+		Status:   StatusText(Status_UNKNOWN.String()),
 		Services: []*ReportItemStandard{},
 	}
 
@@ -34,10 +37,13 @@ func GenerateReport(healthCheck Health, r *http.Request) *ReportStandard {
 			Name: name,
 		}
 
-		outItem.Status = item.Status()
-		if out.Status.Less(outItem.Status) {
-			out.Status = outItem.Status
+		itemStatus := item.Status()
+		outItem.status = &itemStatus
+		if out.status == nil || out.status.Less(itemStatus) {
+			out.status = outItem.status
 		}
+
+		outItem.Status = StatusTextFromStatus(*outItem.status)
 
 		if displayVerbose { // display verbose output (time)
 			outItem.StartTime = item.StartTime().Format(time.RFC3339Nano)
@@ -51,6 +57,10 @@ func GenerateReport(healthCheck Health, r *http.Request) *ReportStandard {
 
 		return nil
 	})
+
+	if out.status != nil {
+		out.Status = StatusTextFromStatus(*out.status)
+	}
 
 	return out
 }

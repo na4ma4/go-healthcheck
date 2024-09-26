@@ -13,7 +13,7 @@ func TestHealthEventStringer(t *testing.T) {
 	ts, _ := time.Parse(time.RFC3339, timeString)
 	event := health.Event{health.NewEventTime(ts), health.StatusStarting}
 
-	expect := "starting[" + timeString + "]"
+	expect := "STARTING[" + timeString + "]"
 
 	if diff := cmp.Diff(event.String(), expect); diff != "" {
 		t.Errorf("health.Event.String: callbacks executed -got +want:\n%s", diff)
