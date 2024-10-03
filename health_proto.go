@@ -18,7 +18,7 @@ func (i *ItemCore) ToProto() *ItemProto {
 	for _, event := range i.Lifecycle() {
 		o.Lifecycle = append(o.Lifecycle, &EventProto{
 			Timestamp: timestamppb.New(event.Timestamp.Time),
-			Status:    event.Status,
+			Status:    event.Status.Status,
 		})
 	}
 

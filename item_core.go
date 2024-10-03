@@ -23,7 +23,7 @@ func NewItemCore(name string) *ItemCore {
 			StatusStarting: NewEventTime(ts),
 		},
 		lifecycle: []Event{
-			{NewEventTime(ts), StatusStarting},
+			{NewEventTime(ts), NewEventStatus(StatusStarting)},
 		},
 	}
 }
@@ -32,7 +32,7 @@ func (i *ItemCore) setStatus(s Status) {
 	ts := time.Now()
 	i.status = s
 	i.times[s] = NewEventTime(ts)
-	i.lifecycle = append(i.lifecycle, Event{NewEventTime(ts), s})
+	i.lifecycle = append(i.lifecycle, Event{NewEventTime(ts), NewEventStatus(s)})
 }
 
 func (i *ItemCore) Name() string {

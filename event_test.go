@@ -11,7 +11,7 @@ import (
 func TestHealthEventStringer(t *testing.T) {
 	timeString := "2006-01-02T15:04:05Z"
 	ts, _ := time.Parse(time.RFC3339, timeString)
-	event := health.Event{health.NewEventTime(ts), health.StatusStarting}
+	event := health.Event{health.NewEventTime(ts), health.NewEventStatus(health.StatusStarting)}
 
 	expect := "STARTING[" + timeString + "]"
 

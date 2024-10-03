@@ -14,7 +14,7 @@ require (
 	github.com/dosquad/go-cliversion v0.1.9 // indirect
 	github.com/dosquad/go-giturl v0.1.1 // indirect
 	github.com/fatih/color v1.17.0 // indirect
-	github.com/go-resty/resty/v2 v2.15.2 // indirect
+	github.com/go-resty/resty/v2 v2.15.3 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
