@@ -1,6 +1,7 @@
 package healthcheck
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 )
@@ -28,6 +29,21 @@ func (s EventStatus) MarshalText() ([]byte, error) {
 
 func (s EventStatus) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + s.String() + `"`), nil
+}
+
+func (s *EventStatus) UnmarshalJSON(data []byte) error {
+	var in string
+	if err := json.Unmarshal(data, &in); err != nil {
+		return err
+	}
+
+	if v, ok := Status_value[in]; ok {
+		*s = EventStatus{Status(v)}
+		return nil
+	}
+
+	*s = NewEventStatus(Status_UNKNOWN)
+	return nil
 }
 
 func NewEventTime(ts time.Time) EventTime {
