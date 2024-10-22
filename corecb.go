@@ -36,8 +36,5 @@ func (c *CoreWithCallback) Status() map[string]bool {
 }
 
 func (c *CoreWithCallback) ToProto() *CoreProto {
-	c.core.lock.Lock()
-	defer c.core.lock.Unlock()
-
 	return c.core.ToProto()
 }
