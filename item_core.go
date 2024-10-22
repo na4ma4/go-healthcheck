@@ -118,9 +118,6 @@ func (i *ItemCore) Stop() Item {
 }
 
 func (i *ItemCore) ToProto() *ItemProto {
-	i.lock.Lock()
-	defer i.lock.Unlock()
-
 	o := &ItemProto{
 		Name:      i.Name(),
 		Duration:  durationpb.New(i.Duration()),
