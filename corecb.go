@@ -34,3 +34,10 @@ func (c *CoreWithCallback) Stop(name string) {
 func (c *CoreWithCallback) Status() map[string]bool {
 	return c.core.Status()
 }
+
+func (c *CoreWithCallback) ToProto() *CoreProto {
+	c.core.lock.Lock()
+	defer c.core.lock.Unlock()
+
+	return c.core.ToProto()
+}

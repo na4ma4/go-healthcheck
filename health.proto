@@ -7,6 +7,10 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/descriptor.proto";
 
+message CoreProto {
+    map<string, ItemProto> items = 1;
+}
+
 message ItemProto {
     string name = 1;
     repeated EventProto lifecycle = 2;

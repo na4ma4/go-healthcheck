@@ -14,6 +14,8 @@ func TestNullCoverage(t *testing.T) {
 }
 
 func testNullCoverage(t *testing.T, core health.Health) {
+	t.Helper()
+
 	item := core.Get("test1").Start().Stop().Error(nil)
 
 	if v := item.Status(); v != health.StatusUnknown { // null doesn't do changes, always returns Unknown

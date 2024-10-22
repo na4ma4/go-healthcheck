@@ -67,3 +67,18 @@ func (c *Core) Status() map[string]bool {
 
 	return out
 }
+
+func (c *Core) ToProto() *CoreProto {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	out := &CoreProto{
+		Items: map[string]*ItemProto{},
+	}
+
+	for k, v := range c.items {
+		out.Items[k] = v.ToProto()
+	}
+
+	return out
+}

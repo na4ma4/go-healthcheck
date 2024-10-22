@@ -80,6 +80,10 @@ func (i *ItemCoreWithCallback) Lifecycle() []Event {
 	return i.item.Lifecycle()
 }
 
+func (i *ItemCoreWithCallback) ToProto() *ItemProto {
+	return i.item.ToProto()
+}
+
 //nolint:revive // unexported so option functions aren't created outside the module.
 func AddOnStatusCallback(status Status, cb ItemCallbackFunc) itemCoreCallbackOpts {
 	return func(itemCore *ItemCoreWithCallback) {

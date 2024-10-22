@@ -25,6 +25,7 @@ func (n *Null) Get(_ string) Item               { return nullItem }
 func (n *Null) Stop(_ string)                   {}
 func (n *Null) Status() map[string]bool         { return map[string]bool{} }
 func (n *Null) Iterate(cb HealthIterator) error { return cb(nullItemName, nullItem) }
+func (n *Null) ToProto() *CoreProto             { return &CoreProto{} }
 
 type NullItem struct{}
 
@@ -36,3 +37,4 @@ func (n *NullItem) Error(_ error) Item      { return n }
 func (n *NullItem) Start() Item             { return n }
 func (n *NullItem) Stop() Item              { return n }
 func (n *NullItem) Status() Status          { return StatusUnknown }
+func (n *NullItem) ToProto() *ItemProto     { return &ItemProto{} }

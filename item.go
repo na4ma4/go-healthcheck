@@ -11,4 +11,5 @@ type Item interface {
 	Start() Item
 	Stop() Item
 	Status() Status
+	ToProto() *ItemProto
 }
