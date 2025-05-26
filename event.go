@@ -15,12 +15,12 @@ func (h Event) String() string {
 	return fmt.Sprintf("%s[%s]", h.Status, h.Timestamp.Format(time.RFC3339))
 }
 
-func NewEventStatus(st Status) EventStatus {
-	return EventStatus{st}
-}
-
 type EventStatus struct {
 	Status
+}
+
+func NewEventStatus(st Status) EventStatus {
+	return EventStatus{st}
 }
 
 func (s EventStatus) MarshalText() ([]byte, error) {
@@ -46,12 +46,12 @@ func (s *EventStatus) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewEventTime(ts time.Time) EventTime {
-	return EventTime{ts}
-}
-
 type EventTime struct {
 	time.Time
+}
+
+func NewEventTime(ts time.Time) EventTime {
+	return EventTime{ts}
 }
 
 func (j EventTime) format() string {
