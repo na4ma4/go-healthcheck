@@ -20,7 +20,7 @@ func (c *Core) Iterate(cb HealthIterator) error {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
-	keys := []string{}
+	keys := make([]string, 0, len(c.items))
 	for name := range c.items {
 		keys = append(keys, name)
 	}
